@@ -193,10 +193,10 @@ URG - Process the urgent packets
 
 #### UDP
 
-No handshake before connection
-No error checking (lost packets occur)
-Faster data transfer
-No validation mechanism (IP spoof possible)
+No handshake before connection </br>
+No error checking (lost packets occur) </br>
+Faster data transfer </br>
+No validation mechanism (IP spoof possible) </br>
 Some usage areas
 - DNS
 - DHCP
