@@ -575,6 +575,32 @@ nmap -sI 172.16.99.2 -Pn -n 172.16.99.206 --top-ports 3
 
 ## Vulnerability Scans
 
+Vulnerability detection entails: </br>
+Configuration Analysis </br>
+Behavior Analysis </br>
+Banner & Version Detection </br>
+Protocol & Version Detection </br>
+
+List of Scanners
+```
+Nmap NSE
+Nessus
+Microsoft MBSA
+Nexpose
+OpenVAS
+SAINT
+GFI LanGuard
+QualysGuard
+Secunia PSI
+```
+
+Vulnerability Databases
+```
+Open Source Vulnerability Database http://osvdb.org/
+NIST National Vulnerability Database http://nvd.nist.gov/
+Common Vulnerability and Exposures (CVE) Details http://www.cvedetails.com/
+```
+
 
 
 
