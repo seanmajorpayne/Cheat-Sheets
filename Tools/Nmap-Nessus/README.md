@@ -27,8 +27,7 @@ ps aux
 Listen to network traffic
 - Tcpdump
 - Wireshark
-
-ARP tables
+- ARP tables
 
 #### Wireshark
 
