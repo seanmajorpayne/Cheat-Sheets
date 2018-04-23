@@ -511,7 +511,7 @@ Filtered
 <- ICMP Unreachable
 ```
 
-Idle Scan (-sl)
+### Idle Scan (-sl)
 
 Truly blind TCP port scan </br>
 No packets from you </br>
