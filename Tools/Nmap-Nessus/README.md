@@ -233,7 +233,7 @@ nmap -sn 172.16.99.0/24 -n | grep "Nmap scan" | cut -d " " -f5
 
 ### Nmap Port Scans
 
-####SYN Scan
+#### SYN Scan
 
 Most popular </br>
 Quick </br>
