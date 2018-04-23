@@ -304,10 +304,10 @@ the OS level.
 TCP connect scans will work as a non-privileged user since you don't interrupt the handshake.
 But, you are also completing a connection, so the destination will log the interaction.
 
-SYN ->
-<- SYN/ACK
--> ACK
--> RST
+SYN -> </br>
+<- SYN/ACK </br>
+-> ACK </br>
+-> RST </br>
 
 ```
 nmap -sT -n -Pn 172.16.99.206 --top-ports 10
@@ -315,12 +315,12 @@ nmap -sT -n -Pn 172.16.99.206 --top-ports 10
 
 #### UDP Scan
 
--sU
-Takes a long time (timeouts)
-Important ports: 53, 69, 67-68, 123, 161-162
-Sends empty UDP packets in general
-Should run with version detection for more accurate results
-Exploitable UDP services are quite common
+-sU </br>
+Takes a long time (timeouts) </br>
+Important ports: 53, 69, 67-68, 123, 161-162 </br>
+Sends empty UDP packets in general </br>
+Should run with version detection for more accurate results </br>
+Exploitable UDP services are quite common </br>
 
 ```
 nmap -n -Pn -sU 172.16.99.206 --top-ports 10 -sV --reason
@@ -328,6 +328,8 @@ nmap -n -Pn -sU 172.16.99.206 --top-ports 10 -sV --reason
 // give reason for connection/failure.
 ```
 
+UDP Port States
+```
 Open
 UDP Packet ->
 <- UDP Response
@@ -343,6 +345,7 @@ UDP Packet ->
 Open|Filtered
 UDP Packet ->
 No response
+```
 
 ### Version and OS Detection
 ```
