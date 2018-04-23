@@ -417,14 +417,14 @@ nmap -n -Pn -sS 172.16.99.139,206 --top-ports 3 -oA resAll
 
 ## Script Scanning
 
--sC is default
-Network Discovery
-Sophisticated Version Detection
-Vulnerability Detection
-Backdoor Detection
-Vulnerability Exploitation
+-sC is default </br>
+Network Discovery </br>
+Sophisticated Version Detection </br>
+Vulnerability Detection </br>
+Backdoor Detection </br>
+Vulnerability Exploitation </br>
 
---script for specific types of scripts
+--script for specific types of scripts </br>
 --script "default and safe"
 
 ```
@@ -435,35 +435,36 @@ locate *.nse | grep telnet
 
 ## Bypassing IPS/IDS
 
-Timing - Extend the duration between packets, Disable parallel scanning
-Fragmentation -f, Split up TCP header over several packets
-		- Generally not supported by Version detection
-Source Port - --source-port, using ports that services need to support (i.e. 80, 443, etc)
-		- This means sending FROM the port on your machine
-Randomised Scanning Order --randomize-hosts
-IP Spoofing - Usually won't receive replies -S
-Firewall and IPS/IDS detection - TTL (Time to Live), --badsum
-		- See difference between two packet transport times
-		- Badsum is usually not verified by firewalls, so if they are sent back, it's
-		probably a firewall
+Timing - Extend the duration between packets, Disable parallel scanning </br>
+Fragmentation -f, Split up TCP header over several packets. Generally not supported by 
+Version detection or Scripts. </br>
+Source Port - --source-port, using ports that services need to support 
+(i.e. 80, 443, etc). This means sending FROM the port on your machine  </br>
+Randomised Scanning Order --randomize-hosts  </br>
+IP Spoofing - Usually won't receive replies -S  </br>
+Firewall and IPS/IDS detection - TTL (Time to Live), --badsum. See difference between two 
+packet transport times. Badsum is usually not verified by firewalls, so if they are sent 
+back, it's probably a firewall
 		
 ### Timing
-	You can use names or numbers
-	-T0 (paranoid) 	- 5 min
-	-T1 (sneaky) 	- 15 sec
-	-T2 (polite)	- .4 sec
-	-T3	(normal)	- Default, parallel scan
-	-T4	(aggressive)
-	-T5	(insane)
 
-	--max-retries 2
-	Number of retries when there is no answer, when Nmap receives no response it's either
-	filtered or lost. Rate limiting may temporarily block as well. Limiting this # can
-	reduce time of scan.
+You can use names or numbers
+```
+-T0 (paranoid) 	- 5 min
+-T1 (sneaky) 	- 15 sec
+-T2 (polite)	- .4 sec
+-T3	(normal)	- Default, parallel scan
+-T4	(aggressive)
+-T5	(insane)
 
-	--host-timeout 30m
-	Max wait duration on a host
+--max-retries 2
+Number of retries when there is no answer, when Nmap receives no response it's either
+filtered or lost. Rate limiting may temporarily block as well. Limiting this # can
+reduce time of scan.
 
+--host-timeout 30m
+Max wait duration on a host
+```
 
 
 
