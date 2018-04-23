@@ -171,12 +171,15 @@ Error-Free
 Flow Control
 
 TCP 3-Way Handshake
-Syn
-Syn/Ack
-Ack
+```
+Syn ->
+<- Syn/Ack
+Ack ->
 Followed by Data Transfer
+```
 
 TCP Flags
+```
 1-bit flags
 SYN, ACK, RST, FIN, PSH, URG
 Syn - Synchronization, used as first step to establish a 3-way handshake
@@ -186,6 +189,7 @@ RST - Sent back when a packet is sent to a particular host that was not expectin
 FIN - Finished, no more data from the sender
 PSH - Process these as they are received instead of buffering them
 URG - Process the urgent packets
+```
 
 #### UDP
 
