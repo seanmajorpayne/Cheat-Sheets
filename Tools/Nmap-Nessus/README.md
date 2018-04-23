@@ -204,19 +204,23 @@ Some usage areas
 
 ### Nmap Ping Scan
 
-Reduce the set of IP ranges into a list of active or interesting hosts
-No port scan -sn
-Only print out the available hosts that responded to the host discovery probes
+Reduce the set of IP ranges into a list of active or interesting hosts </br>
+No port scan -sn </br>
+Only print out the available hosts that responded to the host discovery probes </br>
 
 Default behavior for Privileged User
+```
 ICMP echo request
 SYN -> TCP 443 port
 ACK -> TCP 80 port
 ICMP Timestamp request
 * This is important to remember since this will affect host discovery
+```
 
 For Unprivileged User
+```
 SYN -> TCP 80, 443 ports
+```
 
 ARP Scan in local networks
 
@@ -230,14 +234,14 @@ nmap -sn 172.16.99.0/24 -n | grep "Nmap scan" | cut -d " " -f5
 ### Nmap Port Scans
 
 ####SYN Scan
-Most popular
-Quick
+Most popular </br>
+Quick </br>
 Relatively stealthy since it never completes a TCP connection. This means the destination
-does not log the transaction.
-Allows clear differentiation between open, closed & filtered states
-Also known as Half-Open scan
-Syn/Ack -> Port is listening
-RST -> Port is closed
+does not log the transaction. </br>
+Allows clear differentiation between open, closed & filtered states </br>
+Also known as Half-Open scan </br>
+Syn/Ack -> Port is listening </br>
+RST -> Port is closed </br>
 
 ```
 nmap -sS 172.16.99.0/24 --top-ports 50
@@ -250,6 +254,8 @@ ip.addr==172.16.99.139 && tcp
 nmap -sS 172.16.99.139 -p80
 ```
 
+Different Port States
+```
 Open
 SYN ->
 <- SYN/ACK
@@ -264,6 +270,9 @@ Syn ->
 No response or <- ICMP Unreachable (Both are firewall behaviors)
 
 For UDP, no response would indicate open|filtered
+```
+
+Some Common Nmap Scans
 
 ```
 nmap -sS 172.16.99.206
