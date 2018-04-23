@@ -234,6 +234,7 @@ nmap -sn 172.16.99.0/24 -n | grep "Nmap scan" | cut -d " " -f5
 ### Nmap Port Scans
 
 ####SYN Scan
+
 Most popular </br>
 Quick </br>
 Relatively stealthy since it never completes a TCP connection. This means the destination
