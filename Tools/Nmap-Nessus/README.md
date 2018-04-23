@@ -465,6 +465,120 @@ reduce time of scan.
 Max wait duration on a host
 ```
 
+Closing Parallel Scanning
+```
+-T 0|1|2
+--scan-delay 1
+--max-parallelism 1
+--max-hostgroup 1
+```
+
+## Other Nmap Scans
+
+### NULL, FIN, XMAS Scans (-sN, -sF, -sX)
+Packets without SYN, ACK & RST Flags set </br>
+NULL Scan - No flag is set </br>
+Fin Scan - Only FIN flag is set </br>
+XMAS Scan - FIN, PSH, URG flags are set </br>
+
+States of These Scans
+```
+Closed
+<- RST Packet returned
+
+Open|Filtered
+No Response
+
+Filtered
+<- ICMP Unreachable
+```
+
+### Ack Scan (-sA)
+
+Send a Packet with ACK Flag </br>
+Cannot know if port is opened or closed </br>
+Used to detect filtering </br>
+
+ACK Scan States
+```
+Unfiltered (closed or open)
+<- RST
+
+Filtered
+No return
+
+Filtered
+<- ICMP Unreachable
+```
+
+Idle Scan (-sl)
+
+Truly blind TCP port scan </br>
+No packets from you </br>
+Zombie host to gather information </br>
+
+```
+Open
+Attacker -> SYN/ACK -> Zombie
+Attacker <- RST <- Zombie
+Attacker (Spoofing Zombie) SYN -> Target
+Zombie <- Syn/Ack <- Target
+Zombie -> RST -> Target
+Attacker -> SYN/ACK -> Zombie
+Attacker <- RST <- Zombie
+Packet IP ID # has incremented by 2
+
+Closed
+Attacker -> SYN/ACK -> Zombie
+Attacker <- RST <- Zombie
+Attacker (Spoofing Zombie) SYN -> Target
+Zombie <- RST <- Target
+Zombie (No Reponse)
+Attacker -> SYN/ACK -> Zombie
+Attacker <- RST <- Zombie
+Packet IP ID # has incremented by 1
+
+Filtered
+Attacker -> SYN/ACK -> Zombie
+Attacker <- RST <- Zombie
+Attacker (Spoofing Zombie) SYN -> Target
+Target (No Response)
+Attacker -> SYN/ACK -> Zombie
+Attacker <- RST <- Zombie
+Packet IP ID # has incremented by 1
+
+Note the filtered is not distinguished from the closed.
+
+Unexpected SYN/ACK is responded to with a RST
+Every packet has an IP ID, which is simply incremented by most OSs
+```
+
+You can determine machines that have suitable IP ID Sequencing with the IPIDSEQ script.
+Incremental Sequencing machines can be used as a Zombie.
+
+```
+nmap --script ipidseq 172.16.99.0/24 --top-ports 2
+// Example results
+Host script results:
+|__ipidseq: Randomized
+
+Host script results:
+|__ipidseq: Incremental!
+```
+
+Example Idle Scan
+
+```
+nmap -sI 172.16.99.2 -Pn -n 172.16.99.206 --top-ports 3
+// First IP is the zombie, second is the target
+```
+
+## Vulnerability Scans
+
+
+
+
+
 
 
 
