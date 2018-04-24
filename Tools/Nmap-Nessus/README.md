@@ -601,6 +601,36 @@ NIST National Vulnerability Database http://nvd.nist.gov/
 Common Vulnerability and Exposures (CVE) Details http://www.cvedetails.com/
 ```
 
+## Nessus
+
+Abilities
+- Patch test without using agents
+- Detecting misconfigurations
+- Port scan
+- Service detection
+- Trying for most known credentials
+- Ability to use exploit
+- Ability to look for credentials
+- 70,000+ plugins
+- Reporting
+
+Starting Nessus
+```
+In the web browser
+https://127.0.0.1:8834
+```
+
+In the Nessus GUI, you can create custom scans & enter your target machines.
+There are many options you can configure, but poking around in Nessus is the
+easiest way to familiarize yourself with the options.
+
+Some interesting options
+```
+Perform thorough tests
+Enable safe checks (need this for production systems)
+Add credentials for various services
+```
+
 
 
 
