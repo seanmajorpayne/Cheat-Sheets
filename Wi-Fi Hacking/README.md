@@ -145,6 +145,18 @@ De-authenitcate specific client
 aireplay-ng --deauth [# of packets] -a [AP] -c [target] [interface]
 ```
 
+## Creating a Fake Access Point (honeypot)
+
+Creating an open AP attracts many clients to automatically connect. We can sniff the
+unencrypted traffic created by the clients.
+
+Two cards required
+- One network card needs to be connected to the internet
+- Another card needs to broadcast as an access point (wi-fi card)
+
+
+
+
 
 
 
