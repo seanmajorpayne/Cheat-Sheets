@@ -368,6 +368,47 @@ You can fix the settings to your desire. You can add access controls for MAC add
 
 ## Post Connection Attacks
 
+### Gathering Information
+
+1. Simple and Quick
+
+```
+// Gather information, IPs, MAC addresses, Vendors
+netdiscover -i wlan0 -r 192.168.1.1/24
+```
+
+2. Autoscan, slower but with GUI & more info
+
+```
+http://autoscan-network.com/download/
+// Add 32bit compatability
+$ dpkg --add-architecture i386
+$ apt-get update
+$ apt-get install libc6:i386
+$ bash autoscan-network-1.42-Linux-x86-Install
+$ ./autoscan-network-1.42-Linux-x86-Install
+$ ./AutoScan*.sh
+```
+
+3. Nmap/zenmap
+
+For more detailed notes, see my [Nmap Cheatsheet](https://github.com/seanmajorpayne/Cheat-Sheets/tree/master/Tools/Nmap-Nessus)
+```
+$ zenmap
+```
+
+You can browse by Hosts or Services. Fun example, SSH for Iphones usually has the default
+user "Root" and password "Alpine" if it's been jailbroken. So many times you can just log
+in.
+
+```
+// Log into a rooted Iphone example
+ssh root@192.168.1.12
+```
+
+
+
+
 
 
 
